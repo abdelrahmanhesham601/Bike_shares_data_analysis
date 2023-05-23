@@ -1,0 +1,45 @@
+/* First Question most popular genres */
+SELECT g.Name AS Genre,
+       COUNT(*) AS popularity
+FROM Customer c
+JOIN Invoice i ON c.CustomerId = i.CustomerId
+JOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId
+JOIN Track t ON il.TrackId = t.TrackId
+JOIN Genre g ON t.GenreId = g.GenreId
+GROUP BY g.Name
+ORDER BY popularity DESC;
+
+/* Second Question best selling album */
+SELECT DISTINCT a.Title AS Album,
+                SUM(il.Quantity * il.UnitPrice) As earnings
+FROM Customer c
+JOIN Invoice i ON c.CustomerId = i.CustomerId
+JOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId
+JOIN Track t ON il.TrackId = t.TrackId
+JOIN Album a ON t.AlbumId = a.AlbumId
+GROUP BY a.Title
+ORDER BY earnings DESC
+LIMIT 20;
+
+/* Third Question The artists with the most track duration */
+SELECT art.Name AS Artist,
+       round(AVG(t.Milliseconds), 2) AS AVG_Track_Duration
+FROM Track t
+JOIN Album a ON t.AlbumId = a.AlbumId
+JOIN Artist art ON a.ArtistId = art.ArtistId
+GROUP BY art.Name
+ORDER BY AVG_Track_Duration DESC
+LIMIT 20;
+
+/* Fourth Question most popular artists */
+SELECT art.Name AS Artist,
+       count(*) AS popularity
+FROM Customer c
+JOIN Invoice i ON c.CustomerId = i.CustomerId
+JOIN InvoiceLine il ON i.InvoiceId = il.InvoiceId
+JOIN Track t ON il.TrackId = t.TrackId
+JOIN Album a ON t.AlbumId = a.AlbumId
+JOIN Artist art ON a.ArtistId = art.ArtistId
+GROUP BY art.Name
+ORDER BY popularity DESC
+LIMIT 20;
